@@ -1375,7 +1375,7 @@ export default function App() {
   if (!loggedIn) {
     return (
       <div style={{ minHeight: "100vh", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5674-8a94ec0e/DL_012.webp')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif", position: "relative" }}>
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", pointerEvents: "none" }} />
         <div style={{ width: 400, padding: 40, background: C.sf + "ee", borderRadius: 20, border: `1px solid ${C.bd}`, boxShadow: "0 25px 60px rgba(0,0,0,0.5)", position: "relative", zIndex: 1, backdropFilter: "blur(10px)" }}>
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <div style={{ fontSize: 12, letterSpacing: 4, color: C.acc, fontWeight: 700, marginBottom: 6 }}>OLDENBURGER</div>
@@ -1406,7 +1406,7 @@ export default function App() {
   if (showLandingPage) {
     return (
       <div style={{ minHeight: "100vh", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5573-755608d2/Swarovski%2005.webp')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif", position: "relative" }}>
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.65)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.65)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 36px" }}>
             <div>
