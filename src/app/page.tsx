@@ -1359,6 +1359,7 @@ export default function App() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [userName, setUserName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
     const user = USERS[email.toLowerCase().trim()];
@@ -1374,30 +1375,45 @@ export default function App() {
 
   if (!loggedIn) {
     return (
-      <div style={{ minHeight: "100vh", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5674-8a94ec0e/DL_012.webp')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif", position: "relative" }}>
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", pointerEvents: "none" }} />
-        <div style={{ width: 400, padding: 40, background: C.sf + "ee", borderRadius: 20, border: `1px solid ${C.bd}`, boxShadow: "0 25px 60px rgba(0,0,0,0.5)", position: "relative", zIndex: 1, backdropFilter: "blur(10px)" }}>
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <div style={{ fontSize: 12, letterSpacing: 4, color: C.acc, fontWeight: 700, marginBottom: 6 }}>OLDENBURGER</div>
-            <div style={{ fontSize: 28, fontWeight: 700, color: C.tx }}>Hub</div>
+      <div style={{ display: "flex", minHeight: "100vh", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif" }}>
+        {/* Left: Image panel */}
+        <div style={{ flex: 1, position: "relative", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5674-8a94ec0e/DL_012.webp')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.7) 100%)", pointerEvents: "none" }} />
+          <div style={{ position: "relative", zIndex: 1, padding: "0 48px 48px" }}>
+            <div style={{ fontSize: 11, letterSpacing: 4, color: C.acc, fontWeight: 700, marginBottom: 10 }}>OLDENBURGER INTERIOR</div>
+            <div style={{ fontSize: 28, fontWeight: 300, color: "#fff", lineHeight: 1.3, maxWidth: 400 }}>Crafting spaces that inspire</div>
+            <div style={{ width: 48, height: 2, background: C.acc, marginTop: 20, borderRadius: 1 }} />
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 16 }}>Den Haag · Shanghai · Kuala Lumpur</div>
           </div>
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 11, color: C.txM, display: "block", marginBottom: 6 }}>Email</label>
-            <input value={email} onChange={e => { setEmail(e.target.value); setLoginError(""); }} placeholder="you@oldenburger.com.my" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `1px solid ${loginError ? C.r + "66" : C.bd}`, background: C.bg, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box" }} onKeyDown={e => e.key === "Enter" && handleLogin()} />
+        </div>
+        {/* Right: Login form */}
+        <div style={{ width: 460, background: C.bg, display: "flex", flexDirection: "column", justifyContent: "center", padding: "48px 52px", flexShrink: 0 }}>
+          <div style={{ marginBottom: 40 }}>
+            <div style={{ fontSize: 11, letterSpacing: 4, color: C.acc, fontWeight: 700, marginBottom: 8 }}>OLDENBURGER</div>
+            <div style={{ fontSize: 32, fontWeight: 700, color: C.tx, marginBottom: 6 }}>Hub</div>
+            <div style={{ fontSize: 13, color: C.txM }}>Sign in to your workspace</div>
           </div>
-          <div style={{ marginBottom: 8 }}>
-            <label style={{ fontSize: 11, color: C.txM, display: "block", marginBottom: 6 }}>Password</label>
-            <input type="password" value={password} onChange={e => { setPassword(e.target.value); setLoginError(""); }} placeholder="••••••••" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `1px solid ${loginError ? C.r + "66" : C.bd}`, background: C.bg, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box" }} onKeyDown={e => e.key === "Enter" && handleLogin()} />
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ fontSize: 11, color: C.txM, display: "block", marginBottom: 6, fontWeight: 500 }}>Email</label>
+            <input value={email} onChange={e => { setEmail(e.target.value); setLoginError(""); }} placeholder="you@oldenburger.com.my" style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: `1px solid ${loginError ? C.r + "66" : C.bd}`, background: C.sf, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }} onFocus={e => { if (!loginError) e.currentTarget.style.borderColor = C.acc + "66"; }} onBlur={e => { if (!loginError) e.currentTarget.style.borderColor = C.bd; }} onKeyDown={e => e.key === "Enter" && handleLogin()} />
           </div>
-          {loginError && <div style={{ fontSize: 12, color: C.r, marginBottom: 12, padding: "6px 10px", background: C.r + "12", borderRadius: 6 }}>{loginError}</div>}
-          {!loginError && <div style={{ height: 16, marginBottom: 12 }} />}
-          <button onClick={handleLogin} style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${C.acc}, #B8956A)`, color: C.bg, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 14 }}>Sign In</button>
-          <button onClick={handleLogin} style={{ width: "100%", padding: "12px", borderRadius: 12, border: `1px solid ${C.ms}44`, background: C.ms + "10", color: C.ms, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <div style={{ marginBottom: 10 }}>
+            <label style={{ fontSize: 11, color: C.txM, display: "block", marginBottom: 6, fontWeight: 500 }}>Password</label>
+            <div style={{ position: "relative" }}>
+              <input type={showPassword ? "text" : "password"} value={password} onChange={e => { setPassword(e.target.value); setLoginError(""); }} placeholder="••••••••" style={{ width: "100%", padding: "13px 44px 13px 16px", borderRadius: 10, border: `1px solid ${loginError ? C.r + "66" : C.bd}`, background: C.sf, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }} onFocus={e => { if (!loginError) e.currentTarget.style.borderColor = C.acc + "66"; }} onBlur={e => { if (!loginError) e.currentTarget.style.borderColor = C.bd; }} onKeyDown={e => e.key === "Enter" && handleLogin()} />
+              <button onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: C.txD, fontSize: 16, cursor: "pointer", padding: 4, lineHeight: 1 }} title={showPassword ? "Hide password" : "Show password"}>{showPassword ? "🙈" : "👁"}</button>
+            </div>
+          </div>
+          {loginError && <div style={{ fontSize: 12, color: C.r, marginBottom: 14, padding: "8px 12px", background: C.r + "12", borderRadius: 8 }}>{loginError}</div>}
+          {!loginError && <div style={{ height: 18, marginBottom: 14 }} />}
+          <button onClick={handleLogin} style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${C.acc}, #B8956A)`, color: C.bg, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 14, transition: "opacity 0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.9"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>Sign In</button>
+          <button onClick={handleLogin} style={{ width: "100%", padding: "13px", borderRadius: 12, border: `1px solid ${C.ms}33`, background: C.ms + "08", color: C.ms, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, transition: "background 0.2s" }} onMouseEnter={e => e.currentTarget.style.background = C.ms + "18"} onMouseLeave={e => e.currentTarget.style.background = C.ms + "08"}>
             {"◆ Sign in with Microsoft"}
           </button>
-          <div style={{ textAlign: "center", marginTop: 18, fontSize: 11, color: C.txD }}>
+          <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: C.txD }}>
             <span style={{ color: C.acc, cursor: "pointer" }}>Forgot password?</span>
           </div>
+          <div style={{ marginTop: "auto", paddingTop: 40, fontSize: 10, color: C.txD, textAlign: "center" }}>© 2026 Oldenburger Interior</div>
         </div>
       </div>
     );
