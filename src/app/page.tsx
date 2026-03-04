@@ -1241,9 +1241,9 @@ const StaffDirectory = () => {
 // ─── HUB ACCESS MANAGER ──────────────
 
 const hubEntities = [
-  { id: "nl", name: "Oldenburger Interior B.V.", country: "Netherlands", flag: "🇳🇱", hq: "Den Haag", color: "#FF6B35", employees: 28 },
-  { id: "cn", name: "Oldenburger Interior (Shanghai) Co.", country: "China", flag: "🇨🇳", hq: "Shanghai", color: "#DE2910", employees: 12 },
-  { id: "my", name: "Oldenburger Interior Sdn Bhd", country: "Malaysia", flag: "🇲🇾", hq: "Kuala Lumpur", color: "#010066", employees: 7 },
+  { id: "nl", name: "Oldenburger Interior B.V.", country: "Netherlands", flag: "🇳🇱", hq: "Den Haag", color: "#FF6B35", employees: 0 },
+  { id: "cn", name: "Oldenburger Interior (Shanghai) Co.", country: "China", flag: "🇨🇳", hq: "Shanghai", color: "#DE2910", employees: 0 },
+  { id: "my", name: "Oldenburger Interior Sdn Bhd", country: "Malaysia", flag: "🇲🇾", hq: "Kuala Lumpur", color: "#010066", employees: 0 },
 ];
 
 const hubModules = [
@@ -1267,21 +1267,7 @@ const hubModules = [
   { id: "cross_entity", label: "Cross-Entity View", icon: "🌍", scope: "global" },
 ];
 
-const hubOrg = {
-  ceo: { id: "ceo", name: "Managing Director", role: "Group Owner", icon: "👑", color: C.acc, entity: "global", entityAccess: ["nl","cn","my"], access: ["dashboard","projects","contracts","accounting","reports","knowledge","shipping","open_points","team_overview","ai_assistant","entity_admin","cross_entity"], children: ["nl_head","cn_head","my_head"] },
-  nl_head: { id: "nl_head", name: "Head of Operations NL", role: "GM — Netherlands", icon: "🇳🇱", color: "#FF6B35", entity: "nl", entityAccess: ["nl"], access: ["dashboard","projects","drawings","ai_drawings","production","contracts","accounting","reports","knowledge","shipping","open_points","team_overview","ai_assistant","quick_actions","entity_admin"], children: ["nl_pm1","nl_pm2","nl_tech","nl_fin"] },
-  cn_head: { id: "cn_head", name: "Head of Operations CN", role: "GM — China", icon: "🇨🇳", color: "#DE2910", entity: "cn", entityAccess: ["cn"], access: ["dashboard","projects","drawings","ai_drawings","production","contracts","accounting","reports","knowledge","shipping","open_points","team_overview","ai_assistant","quick_actions","entity_admin"], children: ["cn_pm1","cn_prod","cn_fin"] },
-  my_head: { id: "my_head", name: "Head of Operations MY", role: "GM — Malaysia", icon: "🇲🇾", color: "#010066", entity: "my", entityAccess: ["my"], access: ["dashboard","projects","drawings","production","knowledge","shipping","open_points","team_overview","ai_assistant","quick_actions","entity_admin"], children: ["my_pm1","my_fin"] },
-  nl_pm1: { id: "nl_pm1", name: "Lukas Meier", role: "Senior PM", icon: "📋", color: C.o, entity: "nl", entityAccess: ["nl"], access: ["dashboard","projects","drawings","production","knowledge","shipping","open_points","ai_assistant","quick_actions"], children: ["nl_tech"] },
-  nl_pm2: { id: "nl_pm2", name: "Sophie van Dijk", role: "Design Lead / PM", icon: "📋", color: C.o, entity: "nl", entityAccess: ["nl"], access: ["dashboard","projects","drawings","ai_drawings","knowledge","shipping","open_points","ai_assistant","quick_actions"], children: [] },
-  nl_tech: { id: "nl_tech", name: "Kai Tanaka", role: "Technical Dev", icon: "🔧", color: C.b, entity: "nl", entityAccess: ["nl"], access: ["drawings","ai_drawings","production","knowledge","ai_assistant"], children: [] },
-  nl_fin: { id: "nl_fin", name: "NL Finance", role: "Accounting — NL", icon: "💰", color: C.g, entity: "nl", entityAccess: ["nl"], access: ["accounting","reports","contracts"], children: [] },
-  cn_pm1: { id: "cn_pm1", name: "Anna Chen", role: "Project Manager", icon: "📋", color: C.o, entity: "cn", entityAccess: ["cn"], access: ["dashboard","projects","drawings","production","knowledge","shipping","open_points","ai_assistant","quick_actions"], children: [] },
-  cn_prod: { id: "cn_prod", name: "Wei Liu", role: "Production Mgr", icon: "🏭", color: C.b, entity: "cn", entityAccess: ["cn"], access: ["drawings","production","knowledge","shipping","ai_assistant"], children: [] },
-  cn_fin: { id: "cn_fin", name: "CN Finance", role: "Accounting — CN", icon: "💰", color: C.g, entity: "cn", entityAccess: ["cn"], access: ["accounting","reports","contracts"], children: [] },
-  my_pm1: { id: "my_pm1", name: "Ravi Patel", role: "Project Manager", icon: "📋", color: C.o, entity: "my", entityAccess: ["my"], access: ["dashboard","projects","drawings","production","knowledge","shipping","open_points","ai_assistant","quick_actions"], children: [] },
-  my_fin: { id: "my_fin", name: "MY Finance", role: "Accounting — MY", icon: "💰", color: C.g, entity: "my", entityAccess: ["my"], access: ["accounting","reports","contracts"], children: [] },
-};
+let hubOrg = {};
 
 const hubExternal = {
   ext_lead: { id: "ext_lead", name: "Client Team Lead", role: "Client — Team Lead", icon: "👔", color: C.y, entity: "external", entityAccess: [], access: ["client_portal","open_points","shipping","team_overview","client_chat"], children: ["ext_m","ext_l","ext_t","ext_j","ext_a"] },
@@ -1292,7 +1278,7 @@ const hubExternal = {
   ext_a: { id: "ext_a", name: "Ahmad Razak", role: "Client PM — Kudos", icon: "🏢", color: C.txM, entity: "external", entityAccess: [], access: ["client_portal","open_points","shipping","client_chat"], children: [] },
 };
 
-const allHubPeople = { ...hubOrg, ...hubExternal };
+let allHubPeople = {};
 
 const AccessOrgNode = ({ id, data, selected, setSelected, depth = 0 }) => {
   const person = data[id];
@@ -1363,7 +1349,7 @@ const HubAccessManager = () => {
         <div style={{ flex: 1, minWidth: 280 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: C.txD, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>{view === "internal" ? "Organization" : "Client Teams"}</div>
           {view === "internal" ? (
-            <AccessOrgNode id="ceo" data={hubOrg} selected={selected} setSelected={setSelected} />
+            <AccessOrgNode id="group-root" data={hubOrg} selected={selected} setSelected={setSelected} />
           ) : (
             <AccessOrgNode id="ext_lead" data={hubExternal} selected={selected} setSelected={setSelected} />
           )}
@@ -1650,6 +1636,84 @@ const STAFF = [
   { name: "Edvin Louis", title: "Production Supervisor", department: "production-mgmt", entity: "my", email: "edvin.louis@oldenburger.com.my", reportsTo: "Lars Schulze", level: "mid" },
   { name: "Adran Tan", title: "Production Supervisor", department: "production-mgmt", entity: "my", email: "adran.tan@oldenburger.com.my", reportsTo: "Lars Schulze", level: "mid" },
 ];
+
+// ─── HUB ORG BUILDER ──────────────
+
+const _slugify = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+const _deptIcons = { management: "👑", project: "📋", technical: "🔧", finance: "💰", hr: "👥", purchasing: "📦", logistics: "🚢", quality: "✓", it: "💻", "production-mgmt": "🏭" };
+
+const _entityColors = { nl: "#FF6B35", cn: "#DE2910", my: "#010066" };
+
+const _allMods = ["dashboard","projects","drawings","ai_drawings","production","contracts","accounting","reports","knowledge","shipping","open_points","team_overview","ai_assistant","quick_actions","entity_admin","cross_entity","client_portal","client_chat"];
+
+const _deptExtras = {
+  finance: ["accounting","reports","contracts"],
+  hr: ["team_overview","contracts"],
+  technical: ["drawings","ai_drawings","production"],
+  project: ["drawings","shipping","open_points"],
+  purchasing: ["production","contracts"],
+  logistics: ["shipping","production"],
+  quality: ["drawings","production"],
+  it: _allMods,
+  "production-mgmt": ["production","drawings"],
+  management: [],
+};
+
+const _getAccess = (s) => {
+  let base;
+  switch (s.level) {
+    case "director": base = [..._allMods]; break;
+    case "head": base = ["dashboard","projects","drawings","ai_drawings","production","contracts","accounting","reports","knowledge","shipping","open_points","team_overview","ai_assistant","quick_actions","entity_admin"]; break;
+    case "manager": case "senior": base = ["dashboard","projects","drawings","production","knowledge","shipping","open_points","ai_assistant","quick_actions"]; break;
+    case "mid": case "coordinator": base = ["dashboard","projects","knowledge","ai_assistant","quick_actions"]; break;
+    default: base = ["dashboard","knowledge","ai_assistant"];
+  }
+  return [...new Set([...base, ...(_deptExtras[s.department] || [])])];
+};
+
+const _buildHubOrg = () => {
+  const nameToId = {};
+  const org = {};
+  STAFF.forEach(s => { nameToId[s.name] = _slugify(s.name); });
+  STAFF.forEach(s => {
+    const id = nameToId[s.name];
+    org[id] = {
+      id,
+      name: s.name,
+      role: s.title,
+      icon: _deptIcons[s.department] || "👤",
+      color: _entityColors[s.entity] || C.acc,
+      entity: s.level === "director" ? "global" : s.entity,
+      entityAccess: s.level === "director" ? ["nl","cn","my"] : [s.entity],
+      access: _getAccess(s),
+      children: [],
+    };
+  });
+  STAFF.forEach(s => {
+    if (s.reportsTo && nameToId[s.reportsTo]) {
+      org[nameToId[s.reportsTo]].children.push(nameToId[s.name]);
+    }
+  });
+  const roots = STAFF.filter(s => !s.reportsTo).map(s => nameToId[s.name]);
+  org["group-root"] = {
+    id: "group-root",
+    name: "Oldenburger Interior Group",
+    role: "3 Entities · " + STAFF.length + " Staff",
+    icon: "🏛️",
+    color: C.acc,
+    entity: "global",
+    entityAccess: ["nl","cn","my"],
+    access: _allMods,
+    children: roots,
+  };
+  return org;
+};
+
+hubEntities.forEach(e => { e.employees = STAFF.filter(s => s.entity === e.id).length; });
+hubOrg = _buildHubOrg();
+allHubPeople = { ...hubOrg, ...hubExternal };
+
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
