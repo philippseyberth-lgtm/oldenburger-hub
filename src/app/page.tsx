@@ -1128,6 +1128,116 @@ const AIChat = () => {
   );
 };
 
+// ─── STAFF DIRECTORY ──────────────
+
+const StaffDirectory = () => {
+  const [search, setSearch] = useState("");
+  const [entityFilter, setEntityFilter] = useState("All");
+  const [deptFilter, setDeptFilter] = useState("All");
+  const [expanded, setExpanded] = useState(null);
+
+  const entityOpts = ["All", "NL", "CN", "MY"];
+  const entityMap = { NL: "nl", CN: "cn", MY: "my" };
+  const entityLabels = { nl: "🇳🇱 Netherlands", cn: "🇨🇳 China", my: "🇲🇾 Malaysia" };
+  const entityColors = { nl: "#FF6B35", cn: "#DE2910", my: "#010066" };
+  const deptLabels = { management: "Management", project: "Project", technical: "Technical", finance: "Finance", hr: "HR", purchasing: "Purchasing", logistics: "Logistics", quality: "Quality", it: "IT", "production-mgmt": "Production Mgmt" };
+  const deptOpts = ["All", ...Object.keys(deptLabels)];
+  const levelColors = { director: C.acc, head: C.p, manager: C.b, senior: C.o, mid: C.txM, junior: C.g, assistant: C.txD, coordinator: C.y };
+
+  const filtered = STAFF.filter(s => {
+    if (entityFilter !== "All" && s.entity !== entityMap[entityFilter]) return false;
+    if (deptFilter !== "All" && s.department !== deptFilter) return false;
+    if (search && !s.name.toLowerCase().includes(search.toLowerCase()) && !s.title.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  const grouped = {};
+  filtered.forEach(s => {
+    const key = s.entity;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(s);
+  });
+
+  return (
+    <div>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: C.tx, margin: 0 }}>Staff Directory</h1>
+      <p style={{ color: C.txM, fontSize: 13, marginTop: 4, marginBottom: 16 }}>{STAFF.length} employees across 3 entities</p>
+      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+        <Stat label="Netherlands" value={STAFF.filter(s => s.entity === "nl").length} icon="🇳🇱" color="#FF6B35" />
+        <Stat label="China" value={STAFF.filter(s => s.entity === "cn").length} icon="🇨🇳" color="#DE2910" />
+        <Stat label="Malaysia" value={STAFF.filter(s => s.entity === "my").length} icon="🇲🇾" color="#010066" />
+        <Stat label="Total Staff" value={STAFF.length} icon="👥" />
+      </div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or title..." style={{ padding: "8px 14px", borderRadius: 8, border: `1px solid ${C.bd}`, background: C.sf, color: C.tx, fontSize: 12, outline: "none", minWidth: 200, flex: 1 }} />
+        <div style={{ display: "flex", gap: 4 }}>
+          {entityOpts.map(e => (
+            <button key={e} onClick={() => setEntityFilter(e)} style={{ padding: "6px 12px", borderRadius: 6, border: `1px solid ${entityFilter === e ? C.acc : C.bd}`, background: entityFilter === e ? C.accD : "transparent", color: entityFilter === e ? C.acc : C.txM, fontSize: 11, cursor: "pointer", fontWeight: entityFilter === e ? 600 : 400 }}>{e}</button>
+          ))}
+        </div>
+        <select value={deptFilter} onChange={e => setDeptFilter(e.target.value)} style={{ padding: "6px 10px", borderRadius: 6, border: `1px solid ${C.bd}`, background: C.sf, color: C.tx, fontSize: 11, cursor: "pointer", outline: "none" }}>
+          {deptOpts.map(d => <option key={d} value={d}>{d === "All" ? "All Departments" : deptLabels[d] || d}</option>)}
+        </select>
+      </div>
+      {Object.entries(grouped).sort(([a],[b]) => a.localeCompare(b)).map(([entity, people]) => (
+        <div key={entity} style={{ marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div style={{ width: 4, height: 18, borderRadius: 2, background: entityColors[entity] }} />
+            <span style={{ fontSize: 14, fontWeight: 600, color: C.tx }}>{entityLabels[entity]}</span>
+            <Badge color={entityColors[entity]}>{people.length}</Badge>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 8 }}>
+            {people.map((s, i) => {
+              const isExp = expanded === s.email;
+              return (
+                <div key={s.email || i} onClick={() => setExpanded(isExp ? null : s.email)} style={{ background: C.card, border: `1px solid ${isExp ? C.acc + "55" : C.bd}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", transition: "border-color 0.15s" }} onMouseEnter={e => { if (!isExp) e.currentTarget.style.borderColor = C.acc + "33"; }} onMouseLeave={e => { if (!isExp) e.currentTarget.style.borderColor = C.bd; }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: isExp ? 10 : 0 }}>
+                    <Avatar name={s.name} size={36} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: C.tx, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
+                      <div style={{ fontSize: 11, color: C.txM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.title}</div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 3, alignItems: "flex-end", flexShrink: 0 }}>
+                      <Badge color={levelColors[s.level] || C.txM}>{s.level}</Badge>
+                      <span style={{ fontSize: 9, color: entityColors[s.entity], fontWeight: 600 }}>{s.entity.toUpperCase()}</span>
+                    </div>
+                  </div>
+                  {isExp && (
+                    <div style={{ borderTop: `1px solid ${C.bd}`, paddingTop: 10 }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                          <span style={{ fontSize: 11, color: C.txD, width: 65 }}>Dept</span>
+                          <Badge color={C.b}>{deptLabels[s.department] || s.department}</Badge>
+                        </div>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                          <span style={{ fontSize: 11, color: C.txD, width: 65 }}>Email</span>
+                          <span style={{ fontSize: 11, color: C.acc }}>{s.email}</span>
+                        </div>
+                        {s.reportsTo && (
+                          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                            <span style={{ fontSize: 11, color: C.txD, width: 65 }}>Reports to</span>
+                            <span style={{ fontSize: 11, color: C.tx }}>{s.reportsTo}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+      {filtered.length === 0 && (
+        <div style={{ textAlign: "center", padding: 40, color: C.txD }}>
+          <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
+          <div style={{ fontSize: 13 }}>No staff found matching your filters</div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ─── HUB ACCESS MANAGER ──────────────
 
 const hubEntities = [
@@ -1341,13 +1451,205 @@ const DEPARTMENTS = [
   { key: "accounting", label: "Accounting", icon: "💰", pages: [["accounting", "Financials", "📊"]] },
   { key: "technical", label: "Technical", icon: "🔧", pages: [["tech", "Drawings & Production", "📐"]] },
   { key: "project", label: "Project", icon: "📋", pages: [["pm", "My Projects", "▦"]] },
+  { key: "hr", label: "HR", icon: "👥", pages: [["staff", "Staff Directory", "👥"]] },
   { key: "client", label: "Client", icon: "🏢", pages: [["clientlead", "Team Overview", "◎"], ["client", "Project Portal", "◫"], ["clientai", "Support Chat", "✦"]] },
 ];
 
 const USERS = {
-  "seyberth@oldenburger.com.my": { password: "oldenburger2026", name: "Philipp Seyberth", defaultRole: "owner", entity: "my" },
-  "kohns@oldenburger.com.cn": { password: "oldenburger2026", name: "Jonas Kohns", defaultRole: "owner", entity: "cn" },
+  // Legacy aliases
+  "seyberth@oldenburger.com.my": { password: "oldenburger2026", name: "Philipp Seyberth", defaultRole: "owner", entity: "nl" },
+  "kohns@oldenburger.com.cn": { password: "oldenburger2026", name: "Jonas Kohns", defaultRole: "owner", entity: "nl" },
+  // Netherlands (nl)
+  "philipp.seyberth@oldenburger.com.nl": { password: "oldenburger2026", name: "Philipp Seyberth", defaultRole: "owner", entity: "nl" },
+  "jonas.kohns@oldenburger.com.nl": { password: "oldenburger2026", name: "Jonas Kohns", defaultRole: "owner", entity: "nl" },
+  "carla.escudero@oldenburger.com.nl": { password: "oldenburger2026", name: "Carla Escudero", defaultRole: "manager", entity: "nl" },
+  "johannes.detemple@oldenburger.com.nl": { password: "oldenburger2026", name: "Johannes Detemple", defaultRole: "manager", entity: "nl" },
+  "nils.holert@oldenburger.com.nl": { password: "oldenburger2026", name: "Nils Holert", defaultRole: "senior", entity: "nl" },
+  "vietnga.le@oldenburger.com.nl": { password: "oldenburger2026", name: "Viet Nga Le", defaultRole: "manager", entity: "nl" },
+  "jana.dou@oldenburger.com.nl": { password: "oldenburger2026", name: "Jana Dou", defaultRole: "junior", entity: "nl" },
+  // China (cn)
+  "uwe.kamphaus@oldenburger.com.cn": { password: "oldenburger2026", name: "Uwe Kamphaus", defaultRole: "owner", entity: "cn" },
+  "christoph.mehlig@oldenburger.com.cn": { password: "oldenburger2026", name: "Christoph Mehlig", defaultRole: "manager", entity: "cn" },
+  "tina.jiao@oldenburger.com.cn": { password: "oldenburger2026", name: "Tina Jiao", defaultRole: "mid", entity: "cn" },
+  "lukas.li@oldenburger.com.cn": { password: "oldenburger2026", name: "Lukas Li", defaultRole: "mid", entity: "cn" },
+  "natalia.okuneva@oldenburger.com.cn": { password: "oldenburger2026", name: "Natalia Okuneva", defaultRole: "mid", entity: "cn" },
+  "christy.xiong@oldenburger.com.cn": { password: "oldenburger2026", name: "Christy Xiong", defaultRole: "mid", entity: "cn" },
+  "waikeat.lim@oldenburger.com.cn": { password: "oldenburger2026", name: "Lim Wai Keat", defaultRole: "mid", entity: "cn" },
+  "sonny.yuan@oldenburger.com.cn": { password: "oldenburger2026", name: "Sonny Yuan", defaultRole: "mid", entity: "cn" },
+  "yang.yang@oldenburger.com.cn": { password: "oldenburger2026", name: "Yang Yang", defaultRole: "manager", entity: "cn" },
+  "cindy.chen@oldenburger.com.cn": { password: "oldenburger2026", name: "Cindy Chen", defaultRole: "mid", entity: "cn" },
+  "ivy.dong@oldenburger.com.cn": { password: "oldenburger2026", name: "Ivy Dong", defaultRole: "mid", entity: "cn" },
+  "nancy.hu@oldenburger.com.cn": { password: "oldenburger2026", name: "Nancy Hu", defaultRole: "mid", entity: "cn" },
+  "chen.hao@oldenburger.com.cn": { password: "oldenburger2026", name: "Chen Hao", defaultRole: "mid", entity: "cn" },
+  "jane.hang@oldenburger.com.cn": { password: "oldenburger2026", name: "Jane Hang", defaultRole: "mid", entity: "cn" },
+  "simon.xu@oldenburger.com.cn": { password: "oldenburger2026", name: "Simon Xu", defaultRole: "mid", entity: "cn" },
+  "yumi.liu@oldenburger.com.cn": { password: "oldenburger2026", name: "Yumi Liu", defaultRole: "mid", entity: "cn" },
+  "brian.guan@oldenburger.com.cn": { password: "oldenburger2026", name: "Brian Guan", defaultRole: "mid", entity: "cn" },
+  "zhu.juan@oldenburger.com.cn": { password: "oldenburger2026", name: "Zhu Juan", defaultRole: "mid", entity: "cn" },
+  "miao.xiaoxue@oldenburger.com.cn": { password: "oldenburger2026", name: "Miao Xiaoxue", defaultRole: "mid", entity: "cn" },
+  "wei.yue@oldenburger.com.cn": { password: "oldenburger2026", name: "Wei Yue", defaultRole: "manager", entity: "cn" },
+  "ye.ping@oldenburger.com.cn": { password: "oldenburger2026", name: "Ye Ping", defaultRole: "mid", entity: "cn" },
+  "li.dongmei@oldenburger.com.cn": { password: "oldenburger2026", name: "Li Dongmei", defaultRole: "mid", entity: "cn" },
+  "leni@oldenburger.com.cn": { password: "oldenburger2026", name: "Leni", defaultRole: "mid", entity: "cn" },
+  "jingning.zhang@oldenburger.com.cn": { password: "oldenburger2026", name: "Jingning Zhang", defaultRole: "mid", entity: "cn" },
+  "dirk.shao@oldenburger.com.cn": { password: "oldenburger2026", name: "Dirk Shao", defaultRole: "manager", entity: "cn" },
+  "cathy.wu@oldenburger.com.cn": { password: "oldenburger2026", name: "Cathy Wu", defaultRole: "mid", entity: "cn" },
+  "kellarry.shao@oldenburger.com.cn": { password: "oldenburger2026", name: "Kellarry Shao", defaultRole: "mid", entity: "cn" },
+  "wang.lan@oldenburger.com.cn": { password: "oldenburger2026", name: "Wang Lan", defaultRole: "mid", entity: "cn" },
+  "sophia.dong@oldenburger.com.cn": { password: "oldenburger2026", name: "Sophia Dong", defaultRole: "mid", entity: "cn" },
+  "jessie.wang@oldenburger.com.cn": { password: "oldenburger2026", name: "Jessie Wang", defaultRole: "mid", entity: "cn" },
+  "sean.xue@oldenburger.com.cn": { password: "oldenburger2026", name: "Sean Xue", defaultRole: "mid", entity: "cn" },
+  "qing.zhongjun@oldenburger.com.cn": { password: "oldenburger2026", name: "Qing Zhongjun", defaultRole: "mid", entity: "cn" },
+  "shruti.doshi@oldenburger.com.cn": { password: "oldenburger2026", name: "Shruti Doshi", defaultRole: "mid", entity: "cn" },
+  // Malaysia (my)
+  "nils.crusius@oldenburger.com.my": { password: "oldenburger2026", name: "Nils Crusius", defaultRole: "owner", entity: "my" },
+  "antonio.negrao@oldenburger.com.my": { password: "oldenburger2026", name: "Antonio Negrao", defaultRole: "owner", entity: "my" },
+  "lars.schulze@oldenburger.com.my": { password: "oldenburger2026", name: "Lars Schulze", defaultRole: "manager", entity: "my" },
+  "danny.lim@oldenburger.com.my": { password: "oldenburger2026", name: "Danny Lim", defaultRole: "senior", entity: "my" },
+  "kelvin.lee@oldenburger.com.my": { password: "oldenburger2026", name: "Kelvin Lee", defaultRole: "mid", entity: "my" },
+  "thevakaran@oldenburger.com.my": { password: "oldenburger2026", name: "Thevakaran", defaultRole: "mid", entity: "my" },
+  "amanda.jason@oldenburger.com.my": { password: "oldenburger2026", name: "Amanda Joan Jason", defaultRole: "mid", entity: "my" },
+  "puteri.nuradiba@oldenburger.com.my": { password: "oldenburger2026", name: "Puteri Nuradiba", defaultRole: "mid", entity: "my" },
+  "winkee.lim@oldenburger.com.my": { password: "oldenburger2026", name: "Lim Win Kee", defaultRole: "mid", entity: "my" },
+  "amirul.haiqal@oldenburger.com.my": { password: "oldenburger2026", name: "Amirul Haiqal", defaultRole: "manager", entity: "my" },
+  "abdul.rashid@oldenburger.com.my": { password: "oldenburger2026", name: "Abdul Rashid", defaultRole: "mid", entity: "my" },
+  "khairulazhar@oldenburger.com.my": { password: "oldenburger2026", name: "Khairulazhar", defaultRole: "mid", entity: "my" },
+  "mohd.akmal@oldenburger.com.my": { password: "oldenburger2026", name: "Mohd Akmal", defaultRole: "mid", entity: "my" },
+  "nur.sabrina@oldenburger.com.my": { password: "oldenburger2026", name: "Nur Sabrina", defaultRole: "mid", entity: "my" },
+  "syah.rizal@oldenburger.com.my": { password: "oldenburger2026", name: "Mohamad Syah Rizal", defaultRole: "mid", entity: "my" },
+  "safwan.hilmi@oldenburger.com.my": { password: "oldenburger2026", name: "Muhammad Safwan Hilmi", defaultRole: "mid", entity: "my" },
+  "ahmad.zulkarnanin@oldenburger.com.my": { password: "oldenburger2026", name: "Ahmad Zulkarnanin", defaultRole: "mid", entity: "my" },
+  "naim.mohamad@oldenburger.com.my": { password: "oldenburger2026", name: "Na'im Mohamad", defaultRole: "mid", entity: "my" },
+  "hazman.amin@oldenburger.com.my": { password: "oldenburger2026", name: "Hazman Amin", defaultRole: "mid", entity: "my" },
+  "muhammad.yusuf@oldenburger.com.my": { password: "oldenburger2026", name: "Muhammad Yusuf", defaultRole: "mid", entity: "my" },
+  "fakhrul.faris@oldenburger.com.my": { password: "oldenburger2026", name: "Fakhrul Faris", defaultRole: "mid", entity: "my" },
+  "muhamad.shafiq@oldenburger.com.my": { password: "oldenburger2026", name: "Muhamad Shafiq", defaultRole: "mid", entity: "my" },
+  "kc.ngeow@oldenburger.com.my": { password: "oldenburger2026", name: "KC Ngeow", defaultRole: "manager", entity: "my" },
+  "naskiah@oldenburger.com.my": { password: "oldenburger2026", name: "Naskiah", defaultRole: "mid", entity: "my" },
+  "hema.malini@oldenburger.com.my": { password: "oldenburger2026", name: "Hema Malini", defaultRole: "mid", entity: "my" },
+  "tamainthi@oldenburger.com.my": { password: "oldenburger2026", name: "Tamainthi", defaultRole: "mid", entity: "my" },
+  "nurul.nabila@oldenburger.com.my": { password: "oldenburger2026", name: "Nurul Alia Nabila", defaultRole: "mid", entity: "my" },
+  "ann.yap@oldenburger.com.my": { password: "oldenburger2026", name: "Ann Yap", defaultRole: "mid", entity: "my" },
+  "nurul.aida@oldenburger.com.my": { password: "oldenburger2026", name: "Nurul Aida", defaultRole: "mid", entity: "my" },
+  "helda.natasha@oldenburger.com.my": { password: "oldenburger2026", name: "Helda Natasha", defaultRole: "mid", entity: "my" },
+  "xiolei.tam@oldenburger.com.my": { password: "oldenburger2026", name: "Tam Xio Lei", defaultRole: "mid", entity: "my" },
+  "mahaletchumy@oldenburger.com.my": { password: "oldenburger2026", name: "Mahaletchumy", defaultRole: "mid", entity: "my" },
+  "katherine.chee@oldenburger.com.my": { password: "oldenburger2026", name: "Katherine Chee", defaultRole: "mid", entity: "my" },
+  "anis.syazwanie@oldenburger.com.my": { password: "oldenburger2026", name: "Anis Syazwanie", defaultRole: "mid", entity: "my" },
+  "janet.foong@oldenburger.com.my": { password: "oldenburger2026", name: "Janet Foong", defaultRole: "mid", entity: "my" },
+  "siti.suhaila@oldenburger.com.my": { password: "oldenburger2026", name: "Siti Suhaila", defaultRole: "mid", entity: "my" },
+  "abdul.hakim@oldenburger.com.my": { password: "oldenburger2026", name: "Abdul Hakim", defaultRole: "mid", entity: "my" },
+  "chun.yoongwei@oldenburger.com.my": { password: "oldenburger2026", name: "Chun Yoong Wei", defaultRole: "mid", entity: "my" },
+  "jegathees@oldenburger.com.my": { password: "oldenburger2026", name: "Jegathees", defaultRole: "mid", entity: "my" },
+  "nurul.izzati@oldenburger.com.my": { password: "oldenburger2026", name: "Nurul Izzati", defaultRole: "mid", entity: "my" },
+  "steven.phoon@oldenburger.com.my": { password: "oldenburger2026", name: "Steven Phoon", defaultRole: "mid", entity: "my" },
+  "edvin.louis@oldenburger.com.my": { password: "oldenburger2026", name: "Edvin Louis", defaultRole: "mid", entity: "my" },
+  "adran.tan@oldenburger.com.my": { password: "oldenburger2026", name: "Adran Tan", defaultRole: "mid", entity: "my" },
 };
+
+const STAFF = [
+  // Netherlands
+  { name: "Philipp Seyberth", title: "Managing Director", department: "management", entity: "nl", email: "philipp.seyberth@oldenburger.com.nl", reportsTo: null, level: "director" },
+  { name: "Jonas Kohns", title: "Managing Director", department: "management", entity: "nl", email: "jonas.kohns@oldenburger.com.nl", reportsTo: null, level: "director" },
+  { name: "Carla Escudero", title: "Division Manager", department: "management", entity: "nl", email: "carla.escudero@oldenburger.com.nl", reportsTo: "Philipp Seyberth", level: "manager" },
+  { name: "Johannes Detemple", title: "Lead Ops Europe & BD", department: "management", entity: "nl", email: "johannes.detemple@oldenburger.com.nl", reportsTo: "Philipp Seyberth", level: "manager" },
+  { name: "Nils Holert", title: "Sr Project Supervisor", department: "project", entity: "nl", email: "nils.holert@oldenburger.com.nl", reportsTo: "Johannes Detemple", level: "senior" },
+  { name: "Viet Nga Le", title: "Head of Project", department: "project", entity: "nl", email: "vietnga.le@oldenburger.com.nl", reportsTo: "Johannes Detemple", level: "head" },
+  { name: "Jana Dou", title: "Jr Project Manager", department: "project", entity: "nl", email: "jana.dou@oldenburger.com.nl", reportsTo: "Viet Nga Le", level: "junior" },
+  // China — Management
+  { name: "Uwe Kamphaus", title: "CEO", department: "management", entity: "cn", email: "uwe.kamphaus@oldenburger.com.cn", reportsTo: null, level: "director" },
+  { name: "Christoph Mehlig", title: "Head of Operations", department: "management", entity: "cn", email: "christoph.mehlig@oldenburger.com.cn", reportsTo: "Uwe Kamphaus", level: "head" },
+  // China — Project
+  { name: "Tina Jiao", title: "Project Manager", department: "project", entity: "cn", email: "tina.jiao@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "mid" },
+  { name: "Lukas Li", title: "Project Manager", department: "project", entity: "cn", email: "lukas.li@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "mid" },
+  { name: "Natalia Okuneva", title: "Project Manager", department: "project", entity: "cn", email: "natalia.okuneva@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "mid" },
+  { name: "Christy Xiong", title: "Project Coordinator", department: "project", entity: "cn", email: "christy.xiong@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "coordinator" },
+  { name: "Lim Wai Keat", title: "Project Manager", department: "project", entity: "cn", email: "waikeat.lim@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "mid" },
+  { name: "Sonny Yuan", title: "Project Coordinator", department: "project", entity: "cn", email: "sonny.yuan@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "coordinator" },
+  // China — Technical
+  { name: "Yang Yang", title: "Head of Technical", department: "technical", entity: "cn", email: "yang.yang@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "head" },
+  { name: "Cindy Chen", title: "Technical Designer", department: "technical", entity: "cn", email: "cindy.chen@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Ivy Dong", title: "Technical Designer", department: "technical", entity: "cn", email: "ivy.dong@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Nancy Hu", title: "Technical Designer", department: "technical", entity: "cn", email: "nancy.hu@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Chen Hao", title: "Technical Designer", department: "technical", entity: "cn", email: "chen.hao@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Jane Hang", title: "Technical Designer", department: "technical", entity: "cn", email: "jane.hang@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Simon Xu", title: "Technical Designer", department: "technical", entity: "cn", email: "simon.xu@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Yumi Liu", title: "Technical Designer", department: "technical", entity: "cn", email: "yumi.liu@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Brian Guan", title: "Technical Designer", department: "technical", entity: "cn", email: "brian.guan@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Zhu Juan", title: "Technical Designer", department: "technical", entity: "cn", email: "zhu.juan@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  { name: "Miao Xiaoxue", title: "Technical Designer", department: "technical", entity: "cn", email: "miao.xiaoxue@oldenburger.com.cn", reportsTo: "Yang Yang", level: "mid" },
+  // China — Finance/HR
+  { name: "Wei Yue", title: "Head of Finance & HR", department: "finance", entity: "cn", email: "wei.yue@oldenburger.com.cn", reportsTo: "Uwe Kamphaus", level: "head" },
+  { name: "Ye Ping", title: "Accountant", department: "finance", entity: "cn", email: "ye.ping@oldenburger.com.cn", reportsTo: "Wei Yue", level: "mid" },
+  { name: "Li Dongmei", title: "HR Officer", department: "hr", entity: "cn", email: "li.dongmei@oldenburger.com.cn", reportsTo: "Wei Yue", level: "mid" },
+  { name: "Leni", title: "Finance Assistant", department: "finance", entity: "cn", email: "leni@oldenburger.com.cn", reportsTo: "Wei Yue", level: "assistant" },
+  { name: "Jingning Zhang", title: "HR Assistant", department: "hr", entity: "cn", email: "jingning.zhang@oldenburger.com.cn", reportsTo: "Wei Yue", level: "assistant" },
+  // China — Purchasing
+  { name: "Dirk Shao", title: "Head of Purchasing", department: "purchasing", entity: "cn", email: "dirk.shao@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "head" },
+  { name: "Cathy Wu", title: "Buyer", department: "purchasing", entity: "cn", email: "cathy.wu@oldenburger.com.cn", reportsTo: "Dirk Shao", level: "mid" },
+  { name: "Kellarry Shao", title: "Buyer", department: "purchasing", entity: "cn", email: "kellarry.shao@oldenburger.com.cn", reportsTo: "Dirk Shao", level: "mid" },
+  { name: "Wang Lan", title: "Purchasing Assistant", department: "purchasing", entity: "cn", email: "wang.lan@oldenburger.com.cn", reportsTo: "Dirk Shao", level: "assistant" },
+  // China — Logistics
+  { name: "Sophia Dong", title: "Logistics Coordinator", department: "logistics", entity: "cn", email: "sophia.dong@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "coordinator" },
+  { name: "Jessie Wang", title: "Logistics Assistant", department: "logistics", entity: "cn", email: "jessie.wang@oldenburger.com.cn", reportsTo: "Sophia Dong", level: "assistant" },
+  // China — Quality
+  { name: "Sean Xue", title: "Quality Manager", department: "quality", entity: "cn", email: "sean.xue@oldenburger.com.cn", reportsTo: "Christoph Mehlig", level: "manager" },
+  { name: "Qing Zhongjun", title: "QC Inspector", department: "quality", entity: "cn", email: "qing.zhongjun@oldenburger.com.cn", reportsTo: "Sean Xue", level: "mid" },
+  // China — IT
+  { name: "Shruti Doshi", title: "IT Administrator", department: "it", entity: "cn", email: "shruti.doshi@oldenburger.com.cn", reportsTo: "Uwe Kamphaus", level: "mid" },
+  // Malaysia — Management
+  { name: "Nils Crusius", title: "Director of Sales", department: "management", entity: "my", email: "nils.crusius@oldenburger.com.my", reportsTo: null, level: "director" },
+  { name: "Antonio Negrao", title: "Director of Operations", department: "management", entity: "my", email: "antonio.negrao@oldenburger.com.my", reportsTo: null, level: "director" },
+  { name: "Lars Schulze", title: "Head of Production", department: "production-mgmt", entity: "my", email: "lars.schulze@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "head" },
+  { name: "Danny Lim", title: "Sr Production Manager", department: "production-mgmt", entity: "my", email: "danny.lim@oldenburger.com.my", reportsTo: "Lars Schulze", level: "senior" },
+  // Malaysia — Project
+  { name: "Kelvin Lee", title: "Project Manager", department: "project", entity: "my", email: "kelvin.lee@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "mid" },
+  { name: "Thevakaran", title: "Project Manager", department: "project", entity: "my", email: "thevakaran@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "mid" },
+  { name: "Amanda Joan Jason", title: "Project Coordinator", department: "project", entity: "my", email: "amanda.jason@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "coordinator" },
+  { name: "Puteri Nuradiba", title: "Project Coordinator", department: "project", entity: "my", email: "puteri.nuradiba@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "coordinator" },
+  { name: "Lim Win Kee", title: "Project Coordinator", department: "project", entity: "my", email: "winkee.lim@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "coordinator" },
+  // Malaysia — Technical
+  { name: "Amirul Haiqal", title: "Technical Manager", department: "technical", entity: "my", email: "amirul.haiqal@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "manager" },
+  { name: "Abdul Rashid", title: "Technical Designer", department: "technical", entity: "my", email: "abdul.rashid@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Khairulazhar", title: "Technical Designer", department: "technical", entity: "my", email: "khairulazhar@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Mohd Akmal", title: "Technical Designer", department: "technical", entity: "my", email: "mohd.akmal@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Nur Sabrina", title: "Technical Designer", department: "technical", entity: "my", email: "nur.sabrina@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Mohamad Syah Rizal", title: "Technical Designer", department: "technical", entity: "my", email: "syah.rizal@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Muhammad Safwan Hilmi", title: "Technical Designer", department: "technical", entity: "my", email: "safwan.hilmi@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Ahmad Zulkarnanin", title: "Technical Designer", department: "technical", entity: "my", email: "ahmad.zulkarnanin@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Na'im Mohamad", title: "Technical Designer", department: "technical", entity: "my", email: "naim.mohamad@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Hazman Amin", title: "Technical Designer", department: "technical", entity: "my", email: "hazman.amin@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Muhammad Yusuf", title: "Technical Designer", department: "technical", entity: "my", email: "muhammad.yusuf@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Fakhrul Faris", title: "Technical Designer", department: "technical", entity: "my", email: "fakhrul.faris@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  { name: "Muhamad Shafiq", title: "Technical Designer", department: "technical", entity: "my", email: "muhamad.shafiq@oldenburger.com.my", reportsTo: "Amirul Haiqal", level: "mid" },
+  // Malaysia — Finance/HR
+  { name: "KC Ngeow", title: "Finance Manager", department: "finance", entity: "my", email: "kc.ngeow@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "manager" },
+  { name: "Naskiah", title: "Accounts Executive", department: "finance", entity: "my", email: "naskiah@oldenburger.com.my", reportsTo: "KC Ngeow", level: "mid" },
+  { name: "Hema Malini", title: "HR Executive", department: "hr", entity: "my", email: "hema.malini@oldenburger.com.my", reportsTo: "KC Ngeow", level: "mid" },
+  { name: "Tamainthi", title: "HR & Admin", department: "hr", entity: "my", email: "tamainthi@oldenburger.com.my", reportsTo: "KC Ngeow", level: "mid" },
+  { name: "Nurul Alia Nabila", title: "Admin Assistant", department: "hr", entity: "my", email: "nurul.nabila@oldenburger.com.my", reportsTo: "KC Ngeow", level: "assistant" },
+  // Malaysia — Purchasing
+  { name: "Ann Yap", title: "Purchasing Executive", department: "purchasing", entity: "my", email: "ann.yap@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "mid" },
+  { name: "Nurul Aida", title: "Buyer", department: "purchasing", entity: "my", email: "nurul.aida@oldenburger.com.my", reportsTo: "Ann Yap", level: "mid" },
+  { name: "Helda Natasha", title: "Buyer", department: "purchasing", entity: "my", email: "helda.natasha@oldenburger.com.my", reportsTo: "Ann Yap", level: "mid" },
+  { name: "Tam Xio Lei", title: "Purchasing Assistant", department: "purchasing", entity: "my", email: "xiolei.tam@oldenburger.com.my", reportsTo: "Ann Yap", level: "assistant" },
+  { name: "Mahaletchumy", title: "Purchasing Assistant", department: "purchasing", entity: "my", email: "mahaletchumy@oldenburger.com.my", reportsTo: "Ann Yap", level: "assistant" },
+  // Malaysia — Logistics
+  { name: "Katherine Chee", title: "Logistics Executive", department: "logistics", entity: "my", email: "katherine.chee@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "mid" },
+  { name: "Anis Syazwanie", title: "Shipping Coordinator", department: "logistics", entity: "my", email: "anis.syazwanie@oldenburger.com.my", reportsTo: "Katherine Chee", level: "coordinator" },
+  { name: "Janet Foong", title: "Logistics Assistant", department: "logistics", entity: "my", email: "janet.foong@oldenburger.com.my", reportsTo: "Katherine Chee", level: "assistant" },
+  { name: "Siti Suhaila", title: "Logistics Assistant", department: "logistics", entity: "my", email: "siti.suhaila@oldenburger.com.my", reportsTo: "Katherine Chee", level: "assistant" },
+  { name: "Abdul Hakim", title: "Logistics Assistant", department: "logistics", entity: "my", email: "abdul.hakim@oldenburger.com.my", reportsTo: "Katherine Chee", level: "assistant" },
+  // Malaysia — QA
+  { name: "Chun Yoong Wei", title: "QA Executive", department: "quality", entity: "my", email: "chun.yoongwei@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "mid" },
+  // Malaysia — IT
+  { name: "Jegathees", title: "IT Administrator", department: "it", entity: "my", email: "jegathees@oldenburger.com.my", reportsTo: "Antonio Negrao", level: "mid" },
+  // Malaysia — Production Admin
+  { name: "Nurul Izzati", title: "Production Admin", department: "production-mgmt", entity: "my", email: "nurul.izzati@oldenburger.com.my", reportsTo: "Lars Schulze", level: "mid" },
+  { name: "Steven Phoon", title: "Production Planner", department: "production-mgmt", entity: "my", email: "steven.phoon@oldenburger.com.my", reportsTo: "Lars Schulze", level: "mid" },
+  { name: "Edvin Louis", title: "Production Supervisor", department: "production-mgmt", entity: "my", email: "edvin.louis@oldenburger.com.my", reportsTo: "Lars Schulze", level: "mid" },
+  { name: "Adran Tan", title: "Production Supervisor", department: "production-mgmt", entity: "my", email: "adran.tan@oldenburger.com.my", reportsTo: "Lars Schulze", level: "mid" },
+];
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -1521,6 +1823,7 @@ export default function App() {
         {page === "clientlead" && <ClientTeamLead />}
         {page === "accounting" && <AccountingDashboard />}
         {page === "owner" && <OwnerReports />}
+        {page === "staff" && <StaffDirectory />}
         {page === "ai" && <AIChat />}
       </div>
     </div>
