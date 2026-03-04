@@ -1347,7 +1347,7 @@ const ROLES = {
 
 const USERS = {
   "seyberth@oldenburger.com.my": { password: "oldenburger2026", name: "Philipp Seyberth", defaultRole: "owner", entity: "my" },
-  "kohns@oldenburger.com.cn": { password: "oldenburger2026", name: "Thomas Kohns", defaultRole: "owner", entity: "cn" },
+  "kohns@oldenburger.com.cn": { password: "oldenburger2026", name: "Jonas Kohns", defaultRole: "owner", entity: "cn" },
 };
 
 export default function App() {
