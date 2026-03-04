@@ -1335,15 +1335,14 @@ const HubAccessManager = () => {
 
 // ─── MAIN ──────────────
 
-const ROLES = {
-  tech: { label: "Technical Team", icon: "🔧", pages: [["tech", "Drawings & Production", "📐"]] },
-  admin: { label: "Admin", icon: "🔑", pages: [["admin", "Contracts & Licenses", "📄"], ["access", "Hub Access", "🔐"]] },
-  pm: { label: "Project Manager", icon: "📋", pages: [["pm", "My Projects", "▦"]] },
-  client: { label: "Client PM", icon: "🏢", pages: [["client", "Project Portal", "◫"], ["clientai", "Support Chat", "✦"]] },
-  clientlead: { label: "Client Team Lead", icon: "👔", pages: [["clientlead", "Team Overview", "◎"]] },
-  accounting: { label: "Accounting", icon: "💰", pages: [["accounting", "Financials", "📊"]] },
-  owner: { label: "Owner", icon: "👑", pages: [["owner", "Reports & KPIs", "📈"], ["access", "Hub Access", "🔐"]] },
-};
+const DEPARTMENTS = [
+  { key: "reporting", label: "Reporting", icon: "📈", pages: [["owner", "Reports & KPIs", "📈"], ["access", "Hub Access", "🔐"]] },
+  { key: "admin", label: "Admin", icon: "🔑", pages: [["admin", "Contracts & Licenses", "📄"], ["access_admin", "Hub Access", "🔐"]] },
+  { key: "accounting", label: "Accounting", icon: "💰", pages: [["accounting", "Financials", "📊"]] },
+  { key: "technical", label: "Technical", icon: "🔧", pages: [["tech", "Drawings & Production", "📐"]] },
+  { key: "project", label: "Project", icon: "📋", pages: [["pm", "My Projects", "▦"]] },
+  { key: "client", label: "Client", icon: "🏢", pages: [["clientlead", "Team Overview", "◎"], ["client", "Project Portal", "◫"], ["clientai", "Support Chat", "✦"]] },
+];
 
 const USERS = {
   "seyberth@oldenburger.com.my": { password: "oldenburger2026", name: "Philipp Seyberth", defaultRole: "owner", entity: "my" },
@@ -1353,7 +1352,7 @@ const USERS = {
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [showLandingPage, setShowLandingPage] = useState(true);
-  const [role, setRole] = useState("pm");
+  const [expandedDept, setExpandedDept] = useState(null);
   const [page, setPage] = useState("pm");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -1367,8 +1366,8 @@ export default function App() {
     if (user.password !== password) { setLoginError("Incorrect password"); return; }
     setLoginError("");
     setUserName(user.name);
-    setRole(user.defaultRole);
-    setPage(ROLES[user.defaultRole].pages[0][0]);
+    setExpandedDept(DEPARTMENTS[0].key);
+    setPage(DEPARTMENTS[0].pages[0][0]);
     setShowLandingPage(true);
     setLoggedIn(true);
   };
@@ -1443,12 +1442,12 @@ export default function App() {
               <p style={{ fontSize: 14, color: C.txM, margin: 0 }}>Select a department to get started</p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, width: "100%", maxWidth: 900 }}>
-              {Object.entries(ROLES).map(([key, r]) => (
-                <div key={key} onClick={() => { setRole(key); setPage(r.pages[0][0]); setShowLandingPage(false); }} style={{ background: "rgba(19,24,37,0.85)", border: `1px solid ${C.bd}`, borderRadius: 16, padding: "24px 22px", cursor: "pointer", backdropFilter: "blur(8px)", transition: "all 0.2s ease" }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.acc + "88"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,0.3)`; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.bd; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
-                  <div style={{ fontSize: 28, marginBottom: 12 }}>{r.icon}</div>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: C.tx, marginBottom: 6 }}>{r.label}</div>
+              {DEPARTMENTS.map((dept) => (
+                <div key={dept.key} onClick={() => { setExpandedDept(dept.key); setPage(dept.pages[0][0]); setShowLandingPage(false); }} style={{ background: "rgba(19,24,37,0.85)", border: `1px solid ${C.bd}`, borderRadius: 16, padding: "24px 22px", cursor: "pointer", backdropFilter: "blur(8px)", transition: "all 0.2s ease" }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.acc + "88"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,0.3)`; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.bd; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
+                  <div style={{ fontSize: 28, marginBottom: 12 }}>{dept.icon}</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: C.tx, marginBottom: 6 }}>{dept.label}</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                    {r.pages.map(([, pLabel, pIcon]) => (
+                    {dept.pages.map(([, pLabel, pIcon]) => (
                       <div key={pLabel} style={{ fontSize: 11, color: C.txM, display: "flex", alignItems: "center", gap: 5 }}>
                         <span style={{ fontSize: 10 }}>{pIcon}</span>{pLabel}
                       </div>
@@ -1463,35 +1462,41 @@ export default function App() {
     );
   }
 
-  const roleData = ROLES[role];
-  const allPages = [...roleData.pages];
-  if (role !== "client" && role !== "clientlead") allPages.push(["ai", "AI Assistant", "✦"]);
-
   return (
     <div style={{ display: "flex", height: "100vh", background: C.bg, fontFamily: "'Inter','Segoe UI',system-ui,sans-serif", color: C.tx, overflow: "hidden" }}>
-      <div style={{ width: 200, background: C.sf, borderRight: `1px solid ${C.bd}`, display: "flex", flexDirection: "column", padding: "18px 10px", flexShrink: 0 }}>
+      <div style={{ width: 220, background: C.sf, borderRight: `1px solid ${C.bd}`, display: "flex", flexDirection: "column", padding: "18px 10px", flexShrink: 0 }}>
         <div style={{ padding: "0 10px", marginBottom: 24 }}>
           <div style={{ fontSize: 10, letterSpacing: 3, color: C.acc, fontWeight: 700 }}>OLDENBURGER</div>
           <div style={{ fontSize: 17, fontWeight: 700, color: C.tx }}>Hub</div>
         </div>
-        <div style={{ flex: 1 }}>
-          {allPages.map(([id, label, icon]) => (
-            <button key={id} onClick={() => setPage(id)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 9, padding: "9px 10px", borderRadius: 8, border: "none", background: page === id ? C.accD : "transparent", color: page === id ? C.acc : C.txM, fontSize: 12, fontWeight: page === id ? 600 : 400, cursor: "pointer", marginBottom: 2, textAlign: "left" }}>
-              <span style={{ fontSize: 13, width: 18, textAlign: "center" }}>{icon}</span>{label}
-            </button>
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          {DEPARTMENTS.map((dept) => (
+            <div key={dept.key} style={{ marginBottom: 2 }}>
+              <button onClick={() => { setExpandedDept(expandedDept === dept.key ? null : dept.key); }} style={{ width: "100%", display: "flex", alignItems: "center", gap: 9, padding: "9px 10px", borderRadius: 8, border: "none", background: expandedDept === dept.key ? C.accD : "transparent", color: expandedDept === dept.key ? C.acc : C.txM, fontSize: 12, fontWeight: expandedDept === dept.key ? 600 : 400, cursor: "pointer", textAlign: "left" }}>
+                <span style={{ fontSize: 13, width: 18, textAlign: "center" }}>{dept.icon}</span>
+                <span style={{ flex: 1 }}>{dept.label}</span>
+                <span style={{ fontSize: 10, transition: "transform 0.2s", transform: expandedDept === dept.key ? "rotate(90deg)" : "rotate(0deg)" }}>▸</span>
+              </button>
+              {expandedDept === dept.key && (
+                <div style={{ paddingLeft: 18, marginTop: 2, marginBottom: 4 }}>
+                  {dept.pages.map(([id, label, icon]) => (
+                    <button key={id} onClick={() => setPage(id)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", borderRadius: 7, border: "none", background: page === id ? C.accD : "transparent", color: page === id ? C.acc : C.txD, fontSize: 11, fontWeight: page === id ? 600 : 400, cursor: "pointer", textAlign: "left", marginBottom: 1 }}>
+                      <span style={{ fontSize: 11, width: 16, textAlign: "center" }}>{icon}</span>{label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
+          {expandedDept !== "client" && (
+            <button onClick={() => setPage("ai")} style={{ width: "100%", display: "flex", alignItems: "center", gap: 9, padding: "9px 10px", borderRadius: 8, border: "none", background: page === "ai" ? C.accD : "transparent", color: page === "ai" ? C.acc : C.txM, fontSize: 12, fontWeight: page === "ai" ? 600 : 400, cursor: "pointer", textAlign: "left", marginTop: 6, borderTop: `1px solid ${C.bd}`, paddingTop: 12 }}>
+              <span style={{ fontSize: 13, width: 18, textAlign: "center" }}>✦</span>AI Assistant
+            </button>
+          )}
         </div>
         <button onClick={() => setShowLandingPage(true)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 7, padding: "7px 10px", borderRadius: 8, border: `1px solid ${C.bd}`, background: "transparent", color: C.txM, fontSize: 11, cursor: "pointer", textAlign: "left", marginBottom: 10 }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.acc + "55"; e.currentTarget.style.color = C.acc; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.bd; e.currentTarget.style.color = C.txM; }}>
           <span style={{ fontSize: 12 }}>{"◁"}</span> Back to Departments
         </button>
-        <div style={{ marginBottom: 8 }}>
-          <div style={{ fontSize: 9, color: C.txD, textTransform: "uppercase", letterSpacing: 1, padding: "0 10px", marginBottom: 6 }}>Demo: Switch view</div>
-          {Object.entries(ROLES).map(([k, v]) => (
-            <button key={k} onClick={() => { setRole(k); setPage(v.pages[0][0]); }} style={{ width: "100%", display: "flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6, border: "none", background: role === k ? C.accD : "transparent", color: role === k ? C.acc : C.txD, fontSize: 10, cursor: "pointer", textAlign: "left", marginBottom: 1 }}>
-              <span style={{ fontSize: 11 }}>{v.icon}</span>{v.label}
-            </button>
-          ))}
-        </div>
         {userName && (
           <div style={{ padding: "8px 10px", marginBottom: 6 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -1509,6 +1514,7 @@ export default function App() {
         {page === "tech" && <TechDashboard />}
         {page === "admin" && <AdminDashboard />}
         {page === "access" && <HubAccessManager />}
+        {page === "access_admin" && <HubAccessManager />}
         {page === "pm" && <PMDashboard />}
         {page === "client" && <ClientPortal />}
         {page === "clientai" && <ClientAIChat />}
