@@ -1446,12 +1446,12 @@ const HubAccessManager = () => {
 // ─── MAIN ──────────────
 
 const DEPARTMENTS = [
-  { key: "reporting", label: "Reporting", icon: "📈", pages: [["owner", "Reports & KPIs", "📈"], ["access", "Hub Access", "🔐"]] },
-  { key: "admin", label: "Admin", icon: "🔑", pages: [["admin", "Contracts & Licenses", "📄"], ["access_admin", "Hub Access", "🔐"]] },
+  { key: "reporting", label: "Reporting", icon: "📈", pages: [["owner", "Reports & KPIs", "📈"]] },
+  { key: "admin", label: "Admin", icon: "🔑", pages: [["admin", "Contracts & Licenses", "📄"]] },
   { key: "accounting", label: "Accounting", icon: "💰", pages: [["accounting", "Financials", "📊"]] },
   { key: "technical", label: "Technical", icon: "🔧", pages: [["tech", "Drawings & Production", "📐"]] },
   { key: "project", label: "Project", icon: "📋", pages: [["pm", "My Projects", "▦"]] },
-  { key: "hr", label: "HR", icon: "👥", pages: [["staff", "Staff Directory", "👥"]] },
+  { key: "hr", label: "HR", icon: "👥", pages: [["staff", "Staff Directory", "👥"], ["access", "Hub Access", "🔐"]] },
   { key: "client", label: "Client", icon: "🏢", pages: [["clientlead", "Team Overview", "◎"], ["client", "Project Portal", "◫"], ["clientai", "Support Chat", "✦"]] },
 ];
 
@@ -1816,7 +1816,6 @@ export default function App() {
         {page === "tech" && <TechDashboard />}
         {page === "admin" && <AdminDashboard />}
         {page === "access" && <HubAccessManager />}
-        {page === "access_admin" && <HubAccessManager />}
         {page === "pm" && <PMDashboard />}
         {page === "client" && <ClientPortal />}
         {page === "clientai" && <ClientAIChat />}
