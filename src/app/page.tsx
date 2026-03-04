@@ -1376,7 +1376,7 @@ export default function App() {
     return (
       <div style={{ display: "flex", minHeight: "100vh", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif" }}>
         {/* Left: Image panel */}
-        <div style={{ flex: 1, position: "relative", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5674-8a94ec0e/DL_012.webp')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+        <div style={{ flex: 1, position: "relative", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5644-11f49c43/Gaggenau%2008%20smaller.webp')", backgroundSize: "cover", backgroundPosition: "center", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.7) 100%)", pointerEvents: "none" }} />
           <div style={{ position: "relative", zIndex: 1, padding: "0 48px 48px" }}>
             <div style={{ fontSize: 11, letterSpacing: 4, color: C.acc, fontWeight: 700, marginBottom: 10 }}>OLDENBURGER INTERIOR</div>
