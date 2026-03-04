@@ -1352,6 +1352,7 @@ const USERS = {
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [showLandingPage, setShowLandingPage] = useState(true);
   const [role, setRole] = useState("pm");
   const [page, setPage] = useState("pm");
   const [email, setEmail] = useState("");
@@ -1367,13 +1368,15 @@ export default function App() {
     setUserName(user.name);
     setRole(user.defaultRole);
     setPage(ROLES[user.defaultRole].pages[0][0]);
+    setShowLandingPage(true);
     setLoggedIn(true);
   };
 
   if (!loggedIn) {
     return (
-      <div style={{ minHeight: "100vh", background: `linear-gradient(135deg, ${C.bg}, #0F1625, #121A2B)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif" }}>
-        <div style={{ width: 400, padding: 40, background: C.sf, borderRadius: 20, border: `1px solid ${C.bd}`, boxShadow: "0 25px 60px rgba(0,0,0,0.5)" }}>
+      <div style={{ minHeight: "100vh", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5674-8a94ec0e/DL_012.webp')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif", position: "relative" }}>
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)" }} />
+        <div style={{ width: 400, padding: 40, background: C.sf + "ee", borderRadius: 20, border: `1px solid ${C.bd}`, boxShadow: "0 25px 60px rgba(0,0,0,0.5)", position: "relative", zIndex: 1, backdropFilter: "blur(10px)" }}>
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <div style={{ fontSize: 12, letterSpacing: 4, color: C.acc, fontWeight: 700, marginBottom: 6 }}>OLDENBURGER</div>
             <div style={{ fontSize: 28, fontWeight: 700, color: C.tx }}>Hub</div>
@@ -1400,6 +1403,50 @@ export default function App() {
     );
   }
 
+  if (showLandingPage) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundImage: "url('https://www.oldenburger-interior.com/web/image/5573-755608d2/Swarovski%2005.webp')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", fontFamily: "'Inter','Segoe UI',system-ui,sans-serif", position: "relative" }}>
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.65)" }} />
+        <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 36px" }}>
+            <div>
+              <div style={{ fontSize: 10, letterSpacing: 3, color: C.acc, fontWeight: 700 }}>OLDENBURGER</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: C.tx }}>Hub</div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Avatar name={userName} size={28} />
+                <span style={{ fontSize: 12, color: C.tx, fontWeight: 500 }}>{userName}</span>
+              </div>
+              <button onClick={() => { setLoggedIn(false); setEmail(""); setPassword(""); setUserName(""); }} style={{ padding: "6px 14px", borderRadius: 8, border: `1px solid ${C.bd}`, background: "rgba(255,255,255,0.05)", color: C.txM, fontSize: 11, cursor: "pointer", backdropFilter: "blur(4px)" }}>Sign Out</button>
+            </div>
+          </div>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 36px 60px" }}>
+            <div style={{ textAlign: "center", marginBottom: 40 }}>
+              <h1 style={{ fontSize: 32, fontWeight: 700, color: C.tx, margin: "0 0 8px" }}>Welcome, {userName.split(" ")[0]}</h1>
+              <p style={{ fontSize: 14, color: C.txM, margin: 0 }}>Select a department to get started</p>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, width: "100%", maxWidth: 900 }}>
+              {Object.entries(ROLES).map(([key, r]) => (
+                <div key={key} onClick={() => { setRole(key); setPage(r.pages[0][0]); setShowLandingPage(false); }} style={{ background: "rgba(19,24,37,0.85)", border: `1px solid ${C.bd}`, borderRadius: 16, padding: "24px 22px", cursor: "pointer", backdropFilter: "blur(8px)", transition: "all 0.2s ease" }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.acc + "88"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,0.3)`; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.bd; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
+                  <div style={{ fontSize: 28, marginBottom: 12 }}>{r.icon}</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: C.tx, marginBottom: 6 }}>{r.label}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    {r.pages.map(([, pLabel, pIcon]) => (
+                      <div key={pLabel} style={{ fontSize: 11, color: C.txM, display: "flex", alignItems: "center", gap: 5 }}>
+                        <span style={{ fontSize: 10 }}>{pIcon}</span>{pLabel}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const roleData = ROLES[role];
   const allPages = [...roleData.pages];
   if (role !== "client" && role !== "clientlead") allPages.push(["ai", "AI Assistant", "✦"]);
@@ -1418,6 +1465,9 @@ export default function App() {
             </button>
           ))}
         </div>
+        <button onClick={() => setShowLandingPage(true)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 7, padding: "7px 10px", borderRadius: 8, border: `1px solid ${C.bd}`, background: "transparent", color: C.txM, fontSize: 11, cursor: "pointer", textAlign: "left", marginBottom: 10 }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.acc + "55"; e.currentTarget.style.color = C.acc; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.bd; e.currentTarget.style.color = C.txM; }}>
+          <span style={{ fontSize: 12 }}>{"◁"}</span> Back to Departments
+        </button>
         <div style={{ marginBottom: 8 }}>
           <div style={{ fontSize: 9, color: C.txD, textTransform: "uppercase", letterSpacing: 1, padding: "0 10px", marginBottom: 6 }}>Demo: Switch view</div>
           {Object.entries(ROLES).map(([k, v]) => (
