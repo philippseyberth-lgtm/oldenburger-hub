@@ -1345,10 +1345,30 @@ const ROLES = {
   owner: { label: "Owner", icon: "👑", pages: [["owner", "Reports & KPIs", "📈"], ["access", "Hub Access", "🔐"]] },
 };
 
+const USERS = {
+  "seyberth@oldenburger.com.my": { password: "oldenburger2026", name: "Philipp Seyberth", defaultRole: "owner", entity: "my" },
+  "kohns@oldenburger.com.cn": { password: "oldenburger2026", name: "Thomas Kohns", defaultRole: "owner", entity: "cn" },
+};
+
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState("pm");
   const [page, setPage] = useState("pm");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [userName, setUserName] = useState("");
+
+  const handleLogin = () => {
+    const user = USERS[email.toLowerCase().trim()];
+    if (!user) { setLoginError("Unknown email address"); return; }
+    if (user.password !== password) { setLoginError("Incorrect password"); return; }
+    setLoginError("");
+    setUserName(user.name);
+    setRole(user.defaultRole);
+    setPage(ROLES[user.defaultRole].pages[0][0]);
+    setLoggedIn(true);
+  };
 
   if (!loggedIn) {
     return (
@@ -1360,14 +1380,16 @@ export default function App() {
           </div>
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 11, color: C.txM, display: "block", marginBottom: 6 }}>Email</label>
-            <input placeholder="you@oldenburger-interior.com" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `1px solid ${C.bd}`, background: C.bg, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box" }} />
+            <input value={email} onChange={e => { setEmail(e.target.value); setLoginError(""); }} placeholder="you@oldenburger.com.my" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `1px solid ${loginError ? C.r + "66" : C.bd}`, background: C.bg, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box" }} onKeyDown={e => e.key === "Enter" && handleLogin()} />
           </div>
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 8 }}>
             <label style={{ fontSize: 11, color: C.txM, display: "block", marginBottom: 6 }}>Password</label>
-            <input type="password" placeholder="••••••••" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `1px solid ${C.bd}`, background: C.bg, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box" }} />
+            <input type="password" value={password} onChange={e => { setPassword(e.target.value); setLoginError(""); }} placeholder="••••••••" style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: `1px solid ${loginError ? C.r + "66" : C.bd}`, background: C.bg, color: C.tx, fontSize: 14, outline: "none", boxSizing: "border-box" }} onKeyDown={e => e.key === "Enter" && handleLogin()} />
           </div>
-          <button onClick={() => { setLoggedIn(true); setPage(ROLES[role].pages[0][0]); }} style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${C.acc}, #B8956A)`, color: C.bg, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 14 }}>Sign In</button>
-          <button onClick={() => { setLoggedIn(true); setPage(ROLES[role].pages[0][0]); }} style={{ width: "100%", padding: "12px", borderRadius: 12, border: `1px solid ${C.ms}44`, background: C.ms + "10", color: C.ms, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          {loginError && <div style={{ fontSize: 12, color: C.r, marginBottom: 12, padding: "6px 10px", background: C.r + "12", borderRadius: 6 }}>{loginError}</div>}
+          {!loginError && <div style={{ height: 16, marginBottom: 12 }} />}
+          <button onClick={handleLogin} style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${C.acc}, #B8956A)`, color: C.bg, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 14 }}>Sign In</button>
+          <button onClick={handleLogin} style={{ width: "100%", padding: "12px", borderRadius: 12, border: `1px solid ${C.ms}44`, background: C.ms + "10", color: C.ms, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
             {"◆ Sign in with Microsoft"}
           </button>
           <div style={{ textAlign: "center", marginTop: 18, fontSize: 11, color: C.txD }}>
@@ -1404,7 +1426,18 @@ export default function App() {
             </button>
           ))}
         </div>
-        <button onClick={() => setLoggedIn(false)} style={{ width: "100%", padding: "8px 10px", borderRadius: 8, border: `1px solid ${C.bd}`, background: "transparent", color: C.txM, fontSize: 11, cursor: "pointer", textAlign: "left" }}>Sign Out</button>
+        {userName && (
+          <div style={{ padding: "8px 10px", marginBottom: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <Avatar name={userName} size={24} />
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: C.tx }}>{userName}</div>
+                <div style={{ fontSize: 9, color: C.txD }}>{email}</div>
+              </div>
+            </div>
+          </div>
+        )}
+        <button onClick={() => { setLoggedIn(false); setEmail(""); setPassword(""); setUserName(""); }} style={{ width: "100%", padding: "8px 10px", borderRadius: 8, border: `1px solid ${C.bd}`, background: "transparent", color: C.txM, fontSize: 11, cursor: "pointer", textAlign: "left" }}>Sign Out</button>
       </div>
       <div style={{ flex: 1, overflow: "auto", padding: "20px 26px" }}>
         {page === "tech" && <TechDashboard />}
