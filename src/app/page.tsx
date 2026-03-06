@@ -131,6 +131,39 @@ const months = ["Oct","Nov","Dec","Jan","Feb","Mar"];
 const rev = [820,950,780,1100,980,1250];
 const costs = [620,710,590,780,720,890];
 
+// ─── BRAND / CRM DATA ──────────────
+
+const BRANDS = [
+  // Active Clients
+  { name: "Swarovski", shops: 2800, turnover: "€ 3.5B", industry: "Jewelry / Crystal", potentialY1: 840, potentialY2: 1200, potentialY3: 1600, projectSize: "Large", benchmark: "Flagship Vienna", architect: "In-house + Büro Müller", materials: "Crystal displays, oak veneer, brass fixtures", contact: "Maria Schmidt", status: "Active", stage: "Active Client", remarks: "Flagship Vienna in production. Global rollout potential." },
+  { name: "Gaggenau", shops: 45, turnover: "€ 800M", industry: "Luxury Appliances", potentialY1: 1200, potentialY2: 900, potentialY3: 1500, projectSize: "Large", benchmark: "Shanghai Showroom", architect: "Norm Architects", materials: "Corian, dark oak, steel, stone", contact: "Thomas Berger", status: "Active", stage: "Active Client", remarks: "Shanghai installation ongoing. APAC expansion planned." },
+  { name: "Ganni", shops: 55, turnover: "€ 400M", industry: "Fashion", potentialY1: 520, potentialY2: 680, potentialY3: 750, projectSize: "Medium", benchmark: "Copenhagen Store", architect: "Studio David Thulstrup", materials: "Recycled plastic, terrazzo, steel mesh", contact: "Lars Andersen", status: "Active", stage: "Active Client", remarks: "Design review phase. Sustainability-focused concept." },
+  { name: "De Bijenkorf", shops: 7, turnover: "€ 1.2B", industry: "Department Store", potentialY1: 1500, potentialY2: 800, potentialY3: 600, projectSize: "Large", benchmark: "Amsterdam Renovation", architect: "MVSA Architects", materials: "Marble, brass, hardwood, glass", contact: "Jan de Vries", status: "Active", stage: "Active Client", remarks: "Major renovation in production. Multi-year partnership." },
+  { name: "Kudos", shops: 12, turnover: "€ 50M", industry: "Fashion Retail", potentialY1: 380, potentialY2: 420, potentialY3: 500, projectSize: "Small", benchmark: "KL Boutique", architect: "Local studio", materials: "Plywood, brass, linen", contact: "Ahmad Razak", status: "Active", stage: "Active Client", remarks: "Concept design phase for Kuala Lumpur boutique." },
+  // Hot Prospects
+  { name: "Hublot", shops: 95, turnover: "€ 800M", industry: "Watches / Luxury", potentialY1: 650, potentialY2: 900, potentialY3: 1100, projectSize: "Medium", benchmark: "Geneva boutique", architect: "Peter Marino", materials: "Carbon fiber, titanium, glass, leather", contact: "Philippe Dubois", status: "In Discussion", stage: "Negotiation", remarks: "RFP received for 3 boutiques in APAC. Decision by Q2 2026." },
+  { name: "Hermès", shops: 310, turnover: "€ 13.4B", industry: "Luxury Fashion", potentialY1: 0, potentialY2: 1800, potentialY3: 2500, projectSize: "Large", benchmark: "Rue du Faubourg", architect: "RDAI", materials: "Calfskin panels, sycamore, limestone", contact: "Claire Fontaine", status: "Initial Contact", stage: "Negotiation", remarks: "Met at EUROSHOP. Interest in woodwork capabilities." },
+  { name: "Porsche Design", shops: 40, turnover: "€ 200M", industry: "Luxury Lifestyle", potentialY1: 480, potentialY2: 720, potentialY3: 850, projectSize: "Medium", benchmark: "Stuttgart flagship", architect: "Studio F. A. Porsche", materials: "Aluminum, carbon, walnut, glass", contact: "Stefan Keller", status: "Proposal Sent", stage: "Proposal Sent", remarks: "Proposal for Dubai & Singapore stores sent Feb 2026." },
+  { name: "Escada", shops: 60, turnover: "€ 300M", industry: "Fashion", potentialY1: 350, potentialY2: 500, potentialY3: 600, projectSize: "Medium", benchmark: "Munich boutique", architect: "Sybarite", materials: "Lacquer, mirror, velvet panels", contact: "Anna Weber", status: "Proposal Sent", stage: "Proposal Sent", remarks: "2 store renovations proposed. Awaiting board approval." },
+  { name: "Bulgari", shops: 300, turnover: "€ 4.3B", industry: "Jewelry / Luxury", potentialY1: 0, potentialY2: 1200, potentialY3: 1800, projectSize: "Large", benchmark: "Via Condotti Rome", architect: "Peter Marino / MVRDV", materials: "Marble, gold leaf, onyx, silk", contact: "Marco Rossi", status: "In Discussion", stage: "Negotiation", remarks: "LVMH group contact. Discussion for APAC rollout." },
+  { name: "Tiffany & Co.", shops: 320, turnover: "€ 5.0B", industry: "Jewelry / Luxury", potentialY1: 0, potentialY2: 950, potentialY3: 1400, projectSize: "Large", benchmark: "Fifth Avenue NYC", architect: "OMA / Shohei Shigematsu", materials: "Glass, steel, terrazzo, stone", contact: "David Park", status: "Qualified", stage: "Qualified Lead", remarks: "LVMH group. Interested in European woodwork sourcing." },
+  // Pipeline
+  { name: "Hugo Boss", shops: 450, turnover: "€ 4.2B", industry: "Fashion", potentialY1: 0, potentialY2: 600, potentialY3: 900, projectSize: "Medium", benchmark: "Metzingen HQ", architect: "Matteo Thun", materials: "Concrete, oak, metal mesh", contact: "Klaus Fischer", status: "Research", stage: "Qualified Lead", remarks: "Store refresh program 2026-2028. 200+ stores planned." },
+  { name: "Tommy Hilfiger", shops: 2000, turnover: "€ 4.8B", industry: "Fashion", potentialY1: 0, potentialY2: 400, potentialY3: 800, projectSize: "Medium", benchmark: "Amsterdam HQ store", architect: "In-house design", materials: "Reclaimed wood, steel, denim accents", contact: "Bram Vermeer", status: "Research", stage: "New Lead", remarks: "PVH Group. New concept rollout. Initial outreach done." },
+  { name: "Burberry", shops: 420, turnover: "€ 3.1B", industry: "Luxury Fashion", potentialY1: 0, potentialY2: 700, potentialY3: 1200, projectSize: "Large", benchmark: "Regent Street London", architect: "Vincenzo De Cotiis", materials: "Gabardine panels, oak, brass, glass", contact: "James Whitmore", status: "Research", stage: "New Lead", remarks: "UK-based. Exploring European fixture suppliers." },
+  { name: "Montblanc", shops: 360, turnover: "€ 1.8B", industry: "Luxury Goods", potentialY1: 0, potentialY2: 550, potentialY3: 800, projectSize: "Medium", benchmark: "Hamburg flagship", architect: "Noé Duchaufour-Lawrance", materials: "Lacquer, leather, dark wood, brass", contact: "Henrik Braun", status: "Research", stage: "Qualified Lead", remarks: "Richemont group. Store renovation wave planned." },
+  { name: "Louis Vuitton", shops: 530, turnover: "€ 23B", industry: "Luxury Fashion", potentialY1: 0, potentialY2: 0, potentialY3: 2000, projectSize: "Large", benchmark: "Place Vendôme Paris", architect: "Peter Marino", materials: "Rare woods, marble, glass, gold", contact: "TBD", status: "Target", stage: "New Lead", remarks: "LVMH flagship brand. Long-term target via group contacts." },
+  { name: "Giorgio Armani", shops: 230, turnover: "€ 2.6B", industry: "Fashion / Luxury", potentialY1: 0, potentialY2: 500, potentialY3: 850, projectSize: "Medium", benchmark: "Via Montenapoleone Milan", architect: "Armani / Casa", materials: "Dark veneer, lacquer, bronze, stone", contact: "Lucia Conti", status: "Research", stage: "Qualified Lead", remarks: "Interested in German craftsmanship for new Casa stores." },
+  { name: "Cartier", shops: 270, turnover: "€ 8.5B", industry: "Jewelry / Watches", potentialY1: 0, potentialY2: 800, potentialY3: 1500, projectSize: "Large", benchmark: "Rue de la Paix Paris", architect: "Moinard Bétaille", materials: "Red lacquer, marble, gold, crystal", contact: "Isabelle Morel", status: "Research", stage: "Qualified Lead", remarks: "Richemont group. Renovation cycle starting 2027." },
+  { name: "Bogner", shops: 35, turnover: "€ 250M", industry: "Fashion / Sport", potentialY1: 280, potentialY2: 350, potentialY3: 400, projectSize: "Small", benchmark: "Munich store", architect: "Plajer & Franz", materials: "Alpine wood, felt, steel, stone", contact: "Florian Bogner", status: "In Discussion", stage: "Qualified Lead", remarks: "German brand. Strong alignment with our craftsmanship." },
+  { name: "TUMI", shops: 180, turnover: "€ 900M", industry: "Luxury Travel", potentialY1: 0, potentialY2: 400, potentialY3: 600, projectSize: "Medium", benchmark: "NYC flagship", architect: "In-house", materials: "Aluminum, ballistic nylon displays, walnut", contact: "Jason Lee", status: "Research", stage: "New Lead", remarks: "Samsonite group. APAC expansion plans." },
+  { name: "Triumph", shops: 500, turnover: "€ 2.0B", industry: "Fashion / Lingerie", potentialY1: 200, potentialY2: 350, potentialY3: 500, projectSize: "Small", benchmark: "Zurich store", architect: "Various", materials: "Soft wood, fabric panels, LED integration", contact: "Eva Lindström", status: "In Discussion", stage: "Proposal Sent", remarks: "Swiss HQ. Interested in APAC fixture production." },
+  { name: "Bally", shops: 120, turnover: "€ 500M", industry: "Luxury Fashion", potentialY1: 0, potentialY2: 380, potentialY3: 550, projectSize: "Medium", benchmark: "Zurich Bahnhofstrasse", architect: "David Chipperfield", materials: "Marble, leather panels, polished wood", contact: "Andrea Bianchi", status: "Research", stage: "New Lead", remarks: "Swiss luxury. New ownership, store refresh coming." },
+  { name: "Loro Piana", shops: 185, turnover: "€ 1.8B", industry: "Luxury Fashion", potentialY1: 0, potentialY2: 600, potentialY3: 1000, projectSize: "Medium", benchmark: "Milan via Montenapoleone", architect: "In-house + local", materials: "Cashmere displays, warm woods, stone", contact: "Giulia Ferrari", status: "Research", stage: "New Lead", remarks: "LVMH group. Expanding retail footprint." },
+  { name: "Ermenegildo Zegna", shops: 230, turnover: "€ 1.5B", industry: "Luxury Fashion", potentialY1: 0, potentialY2: 450, potentialY3: 700, projectSize: "Medium", benchmark: "Milan flagship", architect: "Peter Marino", materials: "Wool panels, walnut, brass, stone", contact: "Roberto Zegna", status: "Research", stage: "New Lead", remarks: "Italian luxury. New global store concept launching." },
+  { name: "Breguet", shops: 85, turnover: "€ 600M", industry: "Watches / Luxury", potentialY1: 0, potentialY2: 350, potentialY3: 500, projectSize: "Small", benchmark: "Place Vendôme Paris", architect: "In-house", materials: "Guilloché panels, mahogany, gold leaf", contact: "François Blanc", status: "Research", stage: "New Lead", remarks: "Swatch Group. Niche but high-value per store." },
+];
+
 const ShippingTracker = ({ project }) => {
   const [animPct, setAnimPct] = useState(0);
   const shipData = {
@@ -1429,12 +1462,222 @@ const HubAccessManager = () => {
   );
 };
 
+// ─── SALES CRM ──────────────
+
+const stageCol = s => ({ "Active Client": C.g, "Negotiation": C.o, "Proposal Sent": C.b, "Qualified Lead": C.p, "New Lead": C.txM, "On Hold": C.y, "Lost": C.r }[s] || C.txM);
+const STAGES = ["Active Client", "Negotiation", "Proposal Sent", "Qualified Lead", "New Lead", "On Hold", "Lost"];
+const BRAND_INDUSTRIES = [...new Set(BRANDS.map(b => b.industry))].sort();
+
+const SalesCRM = () => {
+  const [tab, setTab] = useState("Pipeline");
+  const [search, setSearch] = useState("");
+  const [filterIndustry, setFilterIndustry] = useState("All");
+  const [filterStage, setFilterStage] = useState("All");
+  const [expandedBrand, setExpandedBrand] = useState(null);
+
+  const totalPipeline = BRANDS.reduce((s, b) => s + (b.potentialY1 + b.potentialY2 + b.potentialY3), 0);
+  const activeDeals = BRANDS.filter(b => ["Negotiation", "Proposal Sent", "Qualified Lead"].includes(b.stage)).length;
+  const activeClients = BRANDS.filter(b => b.stage === "Active Client").length;
+  const winRate = Math.round((activeClients / BRANDS.length) * 100);
+  const avgSize = Math.round(BRANDS.reduce((s, b) => s + b.potentialY1 + b.potentialY2 + b.potentialY3, 0) / BRANDS.length);
+
+  const stageCounts = STAGES.map(s => ({ stage: s, count: BRANDS.filter(b => b.stage === s).length }));
+  const maxStageCount = Math.max(...stageCounts.map(s => s.count));
+
+  const filtered = BRANDS.filter(b => {
+    if (search && !b.name.toLowerCase().includes(search.toLowerCase()) && !b.industry.toLowerCase().includes(search.toLowerCase())) return false;
+    if (filterIndustry !== "All" && b.industry !== filterIndustry) return false;
+    if (filterStage !== "All" && b.stage !== filterStage) return false;
+    return true;
+  });
+
+  const clientBrands = BRANDS.filter(b => b.stage === "Active Client");
+
+  return (
+    <div>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: C.tx, margin: 0 }}>Sales CRM</h1>
+      <p style={{ color: C.txM, fontSize: 13, marginTop: 4, marginBottom: 16 }}>Brand prospect pipeline · OSI Brand Evaluation data.</p>
+      <Tab tabs={["Pipeline", "Brand Directory", "Active Clients"]} active={tab} set={setTab} />
+
+      {tab === "Pipeline" && (
+        <div>
+          <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+            <Stat label="Total Pipeline (3yr)" value={"€ " + (totalPipeline / 1000).toFixed(1) + "M"} icon="💰" color={C.acc} sub={BRANDS.length + " brands tracked"} />
+            <Stat label="Active Deals" value={activeDeals} icon="🔥" color={C.o} sub="Negotiation + Proposal + Qualified" />
+            <Stat label="Win Rate" value={winRate + "%"} icon="🏆" color={C.g} sub={activeClients + " active clients"} />
+            <Stat label="Avg Project Value" value={"€ " + avgSize + "K"} icon="📊" color={C.b} sub="3-year average per brand" />
+          </div>
+
+          <div style={{ background: C.card, border: `1px solid ${C.bd}`, borderRadius: 14, padding: 22, marginBottom: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: C.tx, marginBottom: 14 }}>Pipeline Funnel</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {stageCounts.map(s => (
+                <div key={s.stage} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 110, fontSize: 11, color: C.txM, textAlign: "right", flexShrink: 0 }}>{s.stage}</div>
+                  <div style={{ flex: 1, height: 22, background: C.bg, borderRadius: 6, overflow: "hidden", position: "relative" }}>
+                    <div style={{ width: `${maxStageCount ? (s.count / maxStageCount) * 100 : 0}%`, height: "100%", background: `linear-gradient(90deg, ${stageCol(s.stage)}88, ${stageCol(s.stage)})`, borderRadius: 6, minWidth: s.count > 0 ? 20 : 0 }} />
+                  </div>
+                  <div style={{ width: 28, fontSize: 13, fontWeight: 600, color: stageCol(s.stage), textAlign: "center" }}>{s.count}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Table
+            cols={[{ label: "Brand", flex: 1.5 }, { label: "Industry", flex: 1.2 }, { label: "Shops", flex: 0.5 }, { label: "Stage", flex: 1 }, { label: "Potential (3yr)", flex: 0.9 }, { label: "Contact", flex: 1 }]}
+            rows={BRANDS.filter(b => ["Negotiation", "Proposal Sent", "Qualified Lead", "Active Client"].includes(b.stage)).sort((a, b) => (b.potentialY1 + b.potentialY2 + b.potentialY3) - (a.potentialY1 + a.potentialY2 + a.potentialY3)).map(b => ({
+              cells: [
+                <span key="n" style={{ fontWeight: 600 }}>{b.name}</span>,
+                <span key="i" style={{ fontSize: 11, color: C.txM }}>{b.industry}</span>,
+                <span key="s" style={{ fontSize: 12 }}>{b.shops.toLocaleString()}</span>,
+                <Badge key="st" color={stageCol(b.stage)}>{b.stage}</Badge>,
+                <span key="v" style={{ fontWeight: 500 }}>{"€ " + ((b.potentialY1 + b.potentialY2 + b.potentialY3) / 1000).toFixed(1) + "M"}</span>,
+                <span key="c" style={{ fontSize: 11, color: C.txM }}>{b.contact}</span>,
+              ]
+            }))}
+          />
+        </div>
+      )}
+
+      {tab === "Brand Directory" && (
+        <div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+            <input
+              value={search} onChange={e => setSearch(e.target.value)}
+              placeholder="Search brands..."
+              style={{ flex: 1, minWidth: 180, padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.bd}`, background: C.sf, color: C.tx, fontSize: 12, outline: "none" }}
+            />
+            <select value={filterIndustry} onChange={e => setFilterIndustry(e.target.value)} style={{ padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.bd}`, background: C.sf, color: C.tx, fontSize: 12 }}>
+              <option value="All">All Industries</option>
+              {BRAND_INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
+            </select>
+            <select value={filterStage} onChange={e => setFilterStage(e.target.value)} style={{ padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.bd}`, background: C.sf, color: C.tx, fontSize: 12 }}>
+              <option value="All">All Stages</option>
+              {STAGES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div style={{ fontSize: 11, color: C.txD, marginBottom: 10 }}>{filtered.length} brand{filtered.length !== 1 ? "s" : ""} found</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {filtered.map(b => {
+              const total3yr = b.potentialY1 + b.potentialY2 + b.potentialY3;
+              const isExpanded = expandedBrand === b.name;
+              return (
+                <div key={b.name} style={{ background: C.card, border: `1px solid ${isExpanded ? C.acc + "44" : C.bd}`, borderRadius: 12, overflow: "hidden", cursor: "pointer" }}
+                  onClick={() => setExpandedBrand(isExpanded ? null : b.name)}>
+                  <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", gap: 12, flexWrap: "wrap" }}>
+                    <div style={{ fontWeight: 600, color: C.tx, fontSize: 14, minWidth: 140 }}>{b.name}</div>
+                    <Badge color={stageCol(b.stage)}>{b.stage}</Badge>
+                    <span style={{ fontSize: 11, color: C.txM }}>{b.industry}</span>
+                    <span style={{ fontSize: 11, color: C.txM }}>{b.shops.toLocaleString()} shops</span>
+                    <span style={{ marginLeft: "auto", fontWeight: 600, color: C.acc, fontSize: 13 }}>{"€ " + (total3yr / 1000).toFixed(1) + "M"}</span>
+                    <span style={{ fontSize: 11, color: C.txD }}>{isExpanded ? "▲" : "▼"}</span>
+                  </div>
+                  {isExpanded && (
+                    <div style={{ padding: "0 16px 14px", borderTop: `1px solid ${C.bd}` }}>
+                      <div style={{ display: "flex", gap: 10, marginTop: 12, marginBottom: 12, flexWrap: "wrap" }}>
+                        {[["Turnover", b.turnover], ["Project Size", b.projectSize], ["Benchmark", b.benchmark], ["Contact", b.contact]].map(([l, v]) => (
+                          <div key={l} style={{ background: C.sf, borderRadius: 8, padding: "8px 12px", minWidth: 100 }}>
+                            <div style={{ fontSize: 9, color: C.txD, textTransform: "uppercase" }}>{l}</div>
+                            <div style={{ fontSize: 12, fontWeight: 500, color: C.tx, marginTop: 2 }}>{v}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ display: "flex", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
+                        {[["Architect", b.architect], ["Materials", b.materials]].map(([l, v]) => (
+                          <div key={l} style={{ background: C.sf, borderRadius: 8, padding: "8px 12px", flex: 1, minWidth: 150 }}>
+                            <div style={{ fontSize: 9, color: C.txD, textTransform: "uppercase" }}>{l}</div>
+                            <div style={{ fontSize: 12, color: C.tx, marginTop: 2 }}>{v}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+                        {[["Y1", b.potentialY1], ["Y2", b.potentialY2], ["Y3", b.potentialY3]].map(([l, v]) => (
+                          <div key={l} style={{ background: C.sf, borderRadius: 8, padding: "8px 12px", textAlign: "center", flex: 1 }}>
+                            <div style={{ fontSize: 9, color: C.txD }}>{l}</div>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: v > 0 ? C.acc : C.txD, marginTop: 2 }}>{v > 0 ? "€ " + v + "K" : "—"}</div>
+                          </div>
+                        ))}
+                      </div>
+                      {b.remarks && <div style={{ padding: "8px 12px", background: C.acc + "10", borderRadius: 8, fontSize: 12, color: C.acc }}>{"📌 " + b.remarks}</div>}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {tab === "Active Clients" && (
+        <div>
+          <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+            <Stat label="Active Clients" value={clientBrands.length} icon="🏢" color={C.g} />
+            <Stat label="Active Projects" value={projects.length} icon="📋" color={C.b} />
+            <Stat label="Total Active Value" value={"€ " + (projects.reduce((s, p) => s + p.budget, 0) / 1e6).toFixed(1) + "M"} icon="💎" color={C.acc} />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {clientBrands.map(b => {
+              const brandProjects = projects.filter(p => p.client === b.name);
+              return (
+                <div key={b.name} style={{ background: C.card, border: `1px solid ${C.bd}`, borderRadius: 14, padding: 18 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 18, fontWeight: 700, color: C.tx }}>{b.name}</span>
+                      <Badge color={C.g}>Active Client</Badge>
+                      <span style={{ fontSize: 11, color: C.txM }}>{b.industry} · {b.shops.toLocaleString()} shops · {b.turnover}</span>
+                    </div>
+                    <span style={{ fontSize: 12, color: C.txM }}>Contact: {b.contact}</span>
+                  </div>
+                  {brandProjects.length > 0 ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {brandProjects.map(p => (
+                        <div key={p.id} style={{ background: C.sf, borderRadius: 10, padding: "12px 16px", border: `1px solid ${C.bd}` }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 6 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <span style={{ fontWeight: 600, color: C.tx, fontSize: 13 }}>{p.name}</span>
+                              <Badge color={stCol(p.status)}>{p.status}</Badge>
+                              <span style={{ fontSize: 11, color: C.txM }}>{p.loc}</span>
+                            </div>
+                            <span style={{ fontSize: 12, color: C.txM }}>PM: {p.pm} · Due: {p.due}</span>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            <div style={{ flex: 1, height: 6, background: C.bg, borderRadius: 99, overflow: "hidden" }}>
+                              <div style={{ width: `${p.progress}%`, height: "100%", background: `linear-gradient(90deg, ${C.acc}88, ${C.acc})`, borderRadius: 99 }} />
+                            </div>
+                            <span style={{ fontSize: 11, fontWeight: 600, color: C.acc }}>{p.progress}%</span>
+                            <span style={{ fontSize: 11, color: C.txM }}>€ {(p.spent / 1000).toFixed(0)}K / € {(p.budget / 1000).toFixed(0)}K</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ padding: "10px 14px", background: C.sf, borderRadius: 8, fontSize: 12, color: C.txD }}>No active projects in system — check remarks: {b.remarks}</div>
+                  )}
+                  <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                    {[["Y1", b.potentialY1], ["Y2", b.potentialY2], ["Y3", b.potentialY3]].map(([l, v]) => (
+                      <div key={l} style={{ background: C.bg, borderRadius: 6, padding: "4px 10px", textAlign: "center" }}>
+                        <span style={{ fontSize: 9, color: C.txD }}>{l}: </span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: v > 0 ? C.g : C.txD }}>{v > 0 ? "€ " + v + "K" : "—"}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ─── MAIN ──────────────
 
 const DEPARTMENTS = [
   { key: "reporting", label: "Reporting", icon: "📈", pages: [["owner", "Reports & KPIs", "📈"]] },
   { key: "admin", label: "Admin", icon: "🔑", pages: [["admin", "Contracts & Licenses", "📄"]] },
   { key: "accounting", label: "Accounting", icon: "💰", pages: [["accounting", "Financials", "📊"]] },
+  { key: "sales", label: "Sales", icon: "💼", pages: [["sales", "Sales CRM", "💼"]] },
   { key: "technical", label: "Technical", icon: "🔧", pages: [["tech", "Drawings & Production", "📐"]] },
   { key: "project", label: "Project", icon: "📋", pages: [["pm", "My Projects", "▦"]] },
   { key: "hr", label: "HR", icon: "👥", pages: [["staff", "Staff Directory", "👥"], ["access", "Hub Access", "🔐"]] },
@@ -1885,6 +2128,7 @@ export default function App() {
         {page === "clientai" && <ClientAIChat />}
         {page === "clientlead" && <ClientTeamLead />}
         {page === "accounting" && <AccountingDashboard />}
+        {page === "sales" && <SalesCRM />}
         {page === "owner" && <OwnerReports />}
         {page === "staff" && <StaffDirectory />}
         {page === "ai" && <AIChat />}
